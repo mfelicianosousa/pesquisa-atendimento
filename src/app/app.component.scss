@@ -1,0 +1,29 @@
+.row {
+  display: flex;
+  align-items: center; /* Alinha os itens verticalmente ao centro */
+  /*margin-bottom: 16px;  Ajuste conforme necessário */
+}
+
+.fields-row {
+  display: flex;  /* Permite que os campos sejam alinhados na mesma linha */
+  flex: 1;  /* Para ocupar todo o espaço disponível */
+  align-items: center; /* Garante que todos os campos também estejam centralizados verticalmente */
+}
+
+.mat-form-field {
+  flex: 1; /* Garante que todos os campos ocupem o mesmo espaço */
+  margin-right: 0; /* Remove o espaço entre os campos */
+}
+
+.mat-form-field:last-child {
+  margin-right: 0; /* Certifique-se de que o último campo não tenha margem */
+}
+
+.row.align-items-center {
+  margin-bottom: 0 !important; /* Remove o espaçamento padrão entre os itens da mesma linha */
+}
+
+.center-title{
+  display: flex;
+  justify-content: center;
+}

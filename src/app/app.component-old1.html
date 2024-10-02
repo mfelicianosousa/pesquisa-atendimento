@@ -1,0 +1,381 @@
+<mat-card-title>Qual o custo atual da solução de VOZ da sua empresa?</mat-card-title>
+<mat-card-content class="mat-card-content-spacing">
+  <!-- Question 2.1 Linha Fixa -->
+  <div class="row align-items-center">
+    <div class="select-group">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Linha Fixa?</mat-label>
+        <mat-select formControlName="hasLinhaFixa" (selectionChange)="onLinhaFixaChange($event.value)">
+          <mat-option value="true">Sim</mat-option>
+          <mat-option value="false">Não</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row fields-row">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Fornecedor</mat-label>
+        <input matInput formControlName="linhaFixaFornecedor" [disabled]="!isLinhaFixaEnabled" />
+        <div
+          *ngIf="pesquisaAtendimentoForm.get('linhaFixaFornecedor')?.errors?.minlength && pesquisaAtendimentoForm.get('linhaFixaFornecedor')?.touched">
+          <small class="text-danger">O valor deve ter no mínimo 3 caracteres.</small>
+        </div>
+
+      </mat-form-field>
+      <mat-form-field class="col-md-2" appearance="outline">
+        <mat-label>Qtde/Velocidade</mat-label>
+        <input matInput formControlName="linhaFixaVelocidade" [disabled]="!isLinhaFixaEnabled" />
+      </mat-form-field>
+      <mat-form-field class="col-md-2" appearance="outline">
+        <mat-label>Valor R$</mat-label>
+        <input matInput type="text" placeholder="0,00" formControlName="linhaFixaValor"
+          [disabled]="!isLinhaFixaEnabled" />
+      </mat-form-field>
+    </div>
+  </div>
+  <!-- 1.2 Question: PABX -->
+  <div class="row align-items-center">
+    <div class="select-group">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>PABX?</mat-label>
+        <mat-select formControlName="hasPabx" (selectionChange)="onPabxChange($event.value)">
+          <mat-option value="true">Sim</mat-option>
+          <mat-option value="false">Não</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div class="row fields-row">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Fornecedor</mat-label>
+        <input matInput formControlName="pabxFornecedor" [disabled]="!isPabxEnabled" />
+        <div
+          *ngIf="pesquisaAtendimentoForm.get('pabxFornecedor')?.errors?.minlength && pesquisaAtendimentoForm.get('pabxFornecedor')?.touched">
+          <small class="text-danger">O valor deve ter no mínimo 3 caracteres.</small>
+        </div>
+      </mat-form-field>
+      <mat-form-field class="col-md-2" appearance="outline">
+        <mat-label>Qtde/Velocidade</mat-label>
+        <input matInput formControlName="pabxVelocidade" [disabled]="!isPabxEnabled" />
+      </mat-form-field>
+      <mat-form-field class="col-md-2" appearance="outline">
+        <mat-label>Valor R$</mat-label>
+        <input matInput type="number" formControlName="pabxValor" [disabled]="!isPabxEnabled" />
+      </mat-form-field>
+    </div>
+  </div>
+</mat-card-content>
+<!-- End Question 2° -->
+<!--
+</mat-card>
+
+<mat-card>
+-->
+<!-- 3° Question -->
+<mat-card-title>Possui algum serviço de SEGURANÇA/GESTÃO de rede de dados?</mat-card-title>
+<mat-card-content>
+  <!-- Pergunta 1.1 SDWAN -->
+  <div class="row align-items-center">
+    <div class="select-group">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>SDWAN?</mat-label>
+        <mat-select formControlName="hasSdwan" (selectionChange)="onSdwanChange($event.value)">
+          <mat-option value="true">Sim</mat-option>
+          <mat-option value="false">Não</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row fields-row">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Fornecedor</mat-label>
+        <input matInput formControlName="sdwanFornecedor" [disabled]="!isSdwanEnabled" />
+        <div
+          *ngIf="pesquisaAtendimentoForm.get('sdwanFornecedor')?.errors?.minlength && pesquisaAtendimentoForm.get('sdwanFornecedor')?.touched">
+          <small class="text-danger">O valor deve ter no mínimo 3 caracteres.</small>
+        </div>
+      </mat-form-field>
+      <mat-form-field class="col-md-2" appearance="outline">
+        <mat-label>Qtde/Velocidade</mat-label>
+        <input matInput formControlName="sdwanVelocidade" [disabled]="!isSdwanEnabled" />
+      </mat-form-field>
+      <mat-form-field class="col-md-2" appearance="outline">
+        <mat-label>Valor R$</mat-label>
+        <input matInput type="text" placeholder="0,00" formControlName="sdwanValor" [disabled]="!isSdwanEnabled" />
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- 1.2 Question: Link de dados -->
+  <div class="row align-items-center">
+    <div class="select-group">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Gestão de Trafego?</mat-label>
+        <mat-select formControlName="hasGestaoTrafego" (selectionChange)="onGestaoTrafegoChange($event.value)">
+          <mat-option value="true">Sim</mat-option>
+          <mat-option value="false">Não</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row fields-row">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Fornecedor</mat-label>
+        <input matInput formControlName="gestaoTrafegoFornecedor" [disabled]="!isGestaoTrafegoEnabled" />
+        <div
+          *ngIf="pesquisaAtendimentoForm.get('gestaoTrafegoFornecedor')?.errors?.minlength && pesquisaAtendimentoForm.get('gestaoTrafegoFornecedor')?.touched">
+          <small class="text-danger">O valor deve ter no mínimo 3 caracteres.</small>
+        </div>
+
+      </mat-form-field>
+      <mat-form-field class="col-md-2" appearance="outline">
+        <mat-label>Qtde/Velocidade</mat-label>
+        <input matInput formControlName="gestaoTrafegoVelocidade" [disabled]="!isGestaoTrafegoEnabled" />
+      </mat-form-field>
+      <mat-form-field class="col-md-2" appearance="outline">
+        <mat-label>Valor R$</mat-label>
+        <input matInput type="number" formControlName="gestaoTrafegoValor" [disabled]="!isGestaoTrafegoEnabled" />
+      </mat-form-field>
+    </div>
+  </div>
+  <!--- ... -->
+</mat-card-content>
+<!-- End Question 3° -->
+<!--
+</mat-card>
+
+<mat-card>
+-->
+<!-- start 4° Question -->
+<mat-card-title>Possui necessidade de locação de maquinas: NOTE, PCS, TABLETS?</mat-card-title>
+<mat-card-content>
+  <!-- Pergunta 1.1 Desktop -->
+  <div class="row align-items-center">
+    <div class="select-group">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Desktop?</mat-label>
+        <mat-select formControlName="hasDesktop" (selectionChange)="onDesktopChange($event.value)">
+          <mat-option value="true">Sim</mat-option>
+          <mat-option value="false">Não</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row fields-row">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Fornecedor</mat-label>
+        <input matInput formControlName="desktopFornecedor" [disabled]="!isDesktopEnabled" />
+        <div
+          *ngIf="pesquisaAtendimentoForm.get('desktopFornecedor')?.errors?.minlength && pesquisaAtendimentoForm.get('desktopFornecedor')?.touched">
+          <small class="text-danger">O valor deve ter no mínimo 3 caracteres.</small>
+        </div>
+      </mat-form-field>
+      <mat-form-field class="col-md-2" appearance="outline">
+        <mat-label>Qtde/Velocidade</mat-label>
+        <input matInput formControlName="desktopVelocidade" [disabled]="!isDesktopEnabled" />
+      </mat-form-field>
+      <mat-form-field class="col-md-2" appearance="outline">
+        <mat-label>Valor R$</mat-label>
+        <input matInput type="text" placeholder="0,00" formControlName="desktopValor" [disabled]="!isDesktopEnabled" />
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- 1.2 Question: Notebook-->
+  <div class="row align-items-center">
+    <div class="select-group">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Notebook?</mat-label>
+        <mat-select formControlName="hasNotebook" (selectionChange)="onNotebookChange($event.value)">
+          <mat-option value="true">Sim</mat-option>
+          <mat-option value="false">Não</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row fields-row">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Fornecedor</mat-label>
+        <input matInput formControlName="notebookFornecedor" [disabled]="!isNotebookEnabled" />
+        <div
+          *ngIf="pesquisaAtendimentoForm.get('notebookFornecedor')?.errors?.minlength && pesquisaAtendimentoForm.get('notebookFornecedor')?.touched">
+          <small class="text-danger">O valor deve ter no mínimo 3 caracteres.</small>
+        </div>
+
+      </mat-form-field>
+      <mat-form-field class="col-md-2" appearance="outline">
+        <mat-label>Qtde/Velocidade</mat-label>
+        <input matInput formControlName="notebookVelocidade" [disabled]="!isNotebookEnabled" />
+      </mat-form-field>
+      <mat-form-field class="col-md-2" appearance="outline">
+        <mat-label>Valor R$</mat-label>
+        <input matInput type="number" formControlName="NotebookValor" [disabled]="!isNotebookEnabled" />
+      </mat-form-field>
+    </div>
+  </div>
+  <!--- ... -->
+</mat-card-content>
+
+<!-- End Question 4° -->
+<!--
+</mat-card>
+
+<mat-card>
+-->
+<!-- 5° Question -->
+<mat-card-title>Utiliza OFFICE ou GOOGLE?</mat-card-title>
+<mat-card-content>
+  <!-- Question 5.1 Desktop -->
+  <div class="row align-items-center">
+    <div class="select-group">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Office 365?</mat-label>
+        <mat-select formControlName="hasOffice365">
+          <mat-option value="true">Sim</mat-option>
+          <mat-option value="false">Não</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+  </div>
+
+  <!-- 5.2 Question: Notebook-->
+  <div class="row align-items-center">
+    <div class="select-group">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Google Workpace?</mat-label>
+        <mat-select formControlName="hasGoogleWorkspace">
+          <mat-option value="true">Sim</mat-option>
+          <mat-option value="false">Não</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+</mat-card-content>
+<!-- End Question 5° -->
+<!--
+</mat-card>
+
+<mat-card>
+-->
+<!-- 6° Question -->
+<mat-card-title> Onde armazena os dados da sua empresa em NUVEM ou SERVIDOR?</mat-card-title>
+<mat-card-content>
+  <!-- Sub-Question 6.1 Cloud -->
+  <div class="row align-items-center">
+    <div class="select-group">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Cloud?</mat-label>
+        <mat-select formControlName="hasCloud" (selectionChange)="onCloudChange($event.value)">
+          <mat-option value="true">Sim</mat-option>
+          <mat-option value="false">Não</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row fields-row">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Fornecedor</mat-label>
+        <input matInput formControlName="cloudFornecedor" [disabled]="!isCloudEnabled" />
+        <div
+          *ngIf="pesquisaAtendimentoForm.get('cloudFornecedor')?.errors?.minlength && pesquisaAtendimentoForm.get('cloudFornecedor')?.touched">
+          <small class="text-danger">O valor deve ter no mínimo 3 caracteres.</small>
+        </div>
+
+
+      </mat-form-field>
+      <mat-form-field class="col-md-2" appearance="outline">
+        <mat-label>Qtde/Velocidade</mat-label>
+        <input matInput formControlName="cloudVelocidade" [disabled]="!isCloudEnabled" />
+      </mat-form-field>
+      <mat-form-field class="col-md-2" appearance="outline">
+        <mat-label>Valor R$</mat-label>
+        <input matInput type="text" placeholder="0,00" formControlName="cloudValor" [disabled]="!isCloudEnabled" />
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- .... -->
+  <!-- 6.2 Question: Link de dados -->
+  <div class="row align-items-center">
+    <div class="select-group">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Servidor?</mat-label>
+        <mat-select formControlName="hasServidor">
+          <mat-option value="true">Sim</mat-option>
+          <mat-option value="false">Não</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+  <!--- ... -->
+</mat-card-content>
+
+<!-- End Question 6° -->
+<!--
+</mat-card>
+<mat-card>
+-->
+<!-- start 7° Question -->
+<mat-card-title>Possui Site e/ou redes sociais?</mat-card-title>
+<mat-card-content>
+  <!-- Pergunta 7.1 Site -->
+  <div class="row align-items-center">
+    <div class="select-group">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Site?</mat-label>
+        <mat-select formControlName="hasSite" (selectionChange)="onSiteChange($event.value)">
+          <mat-option value="true">Sim</mat-option>
+          <mat-option value="false">Não</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row fields-row">
+      <mat-form-field class="col-md-5" appearance="outline">
+        <mat-label>Endereço Eletrônico</mat-label>
+        <input matInput formControlName="siteUrl" [disabled]="!isSiteEnabled" />
+      </mat-form-field>
+
+    </div>
+  </div>
+  <!-- 7.2 Question: Instagram -->
+  <div class="row align-items-center">
+    <div class="select-group">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Instagram?</mat-label>
+        <mat-select formControlName="hasInstagram" (selectionChange)="onInstagramChange($event.value)">
+          <mat-option value="true">Sim</mat-option>
+          <mat-option value="false">Não</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row fields-row">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Endereço Eletrônico</mat-label>
+        <input matInput formControlName="instagramUrl" [disabled]="!isInstagramEnabled" />
+      </mat-form-field>
+    </div>
+  </div>
+  <!-- 7.3 Question: Linkedin-->
+  <div class="row align-items-center">
+    <div class="select-group">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Linkedin?</mat-label>
+        <mat-select formControlName="hasLinkedin" (selectionChange)="onLinkedinChange($event.value)">
+          <mat-option value="true">Sim</mat-option>
+          <mat-option value="false">Não</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row fields-row">
+      <mat-form-field class="col-md-4" appearance="outline">
+        <mat-label>Endereço Eletrônico</mat-label>
+        <input matInput formControlName="linkedinUrl" [disabled]="!isLinkedinEnabled" />
+      </mat-form-field>
+    </div>
+  </div>
+  <!--- ... -->
+</mat-card-content>
