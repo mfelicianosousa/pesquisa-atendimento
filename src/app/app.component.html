@@ -7,7 +7,7 @@
     </mat-card-header>
     <mat-card-content>
       <!-- 1° Pergunta -->
-      <mat-accordion>
+      <mat-accordion [multi]="false">
         <mat-expansion-panel>
           <mat-expansion-panel-header class="custom-header">
             <mat-panel-title class="custom-title">
@@ -27,7 +27,8 @@
             </div>
 
             <div class="row fields-row">
-              <mat-form-field class="col-md-4" appearance="outline">
+              <mat-form-field class="col-md-4" appearance="outline"
+                [ngClass]="{'enabled-field': isBandaLargaEnabled, 'disabled-field': !isBandaLargaEnabled}">
                 <mat-label>Fornecedor</mat-label>
                 <input matInput formControlName="bandaLargaFornecedor" [disabled]="!isBandaLargaEnabled" />
                 <div
@@ -35,7 +36,8 @@
                   <small class="text-danger">Esse campo é obrigatório.</small>
                 </div>
               </mat-form-field>
-              <mat-form-field class="col-md-2" appearance="outline">
+              <mat-form-field class="col-md-2" appearance="outline" appearance="outline"
+                [ngClass]="{'enabled-field': isBandaLargaEnabled, 'disabled-field': !isBandaLargaEnabled}">
                 <mat-label>Qtde/Velocidade</mat-label>
                 <input matInput formControlName="bandaLargaVelocidade" [disabled]="!isBandaLargaEnabled" />
                 <div
@@ -43,7 +45,8 @@
                   <small class="text-danger">Este campo é obrigatório.</small>
                 </div>
               </mat-form-field>
-              <mat-form-field class="col-md-2" appearance="outline">
+              <mat-form-field class="col-md-2" appearance="outline" appearance="outline"
+                [ngClass]="{'enabled-field': isBandaLargaEnabled, 'disabled-field': !isBandaLargaEnabled}">
                 <mat-label>Valor R$</mat-label>
                 <input matInput type="text" placeholder="0,00" formControlName="bandaLargaValor"
                   [disabled]="!isBandaLargaEnabled" />
@@ -313,7 +316,7 @@
               </mat-form-field>
               <mat-form-field class="col-md-2" appearance="outline">
                 <mat-label>Valor R$</mat-label>
-                <input matInput type="number" formControlName="NotebookValor" [disabled]="!isNotebookEnabled" />
+                <input matInput type="number" formControlName="notebookValor" [disabled]="!isNotebookEnabled" />
               </mat-form-field>
             </div>
           </div>
@@ -442,10 +445,30 @@
             <div class="select-group">
               <mat-form-field class="col-md-4" appearance="outline">
                 <mat-label>Servidor?</mat-label>
-                <mat-select formControlName="hasServidor">
+                <mat-select formControlName="hasServidor" (selectionChange)="onServidorChange($event.value)">
                   <mat-option value="true">Sim</mat-option>
                   <mat-option value="false">Não</mat-option>
                 </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="row fields-row">
+              <mat-form-field class="col-md-4" appearance="outline">
+                <mat-label>Fornecedor</mat-label>
+                <input matInput formControlName="servidorFornecedor" [disabled]="!isServidorEnabled" />
+                <div
+                  *ngIf="pesquisaAtendimentoForm.get('servidorFornecedor')?.errors?.minlength && pesquisaAtendimentoForm.get('servidorFornecedor')?.touched">
+                  <small class="text-danger">O valor deve ter no mínimo 3 caracteres.</small>
+                </div>
+              </mat-form-field>
+              <mat-form-field class="col-md-2" appearance="outline">
+                <mat-label>Qtde/Velocidade</mat-label>
+                <input matInput formControlName="servidorVelocidade" [disabled]="!isServidorEnabled" />
+              </mat-form-field>
+              <mat-form-field class="col-md-2" appearance="outline">
+                <mat-label>Valor R$</mat-label>
+                <input matInput type="text" placeholder="0,00" formControlName="servidorValor"
+                  [disabled]="!isCloudEnabled" />
               </mat-form-field>
             </div>
           </div>
@@ -523,33 +546,25 @@
           <!-- Start 8° Question -->
           <mat-expansion-panel-header>
             <mat-panel-title>
-              Deseja agendar uma <strong> &nbsp; Video/Reunião &nbsp;</strong> com um especialista em negócios avançados
+              Deseja agendar uma <strong>&nbsp; Video/Reunião &nbsp;</strong> com um especialista em negócios avançados
               de TI?
             </mat-panel-title>
           </mat-expansion-panel-header>
+
           <!-- Pergunta 8.1 Agendar Video/Reunião -->
           <div class="row align-items-center">
             <div class="select-group">
               <mat-form-field class="col-md-2" appearance="outline">
                 <mat-label>Agendar Reunião?</mat-label>
                 <mat-select formControlName="hasEspecialista" (selectionChange)="onEspecialistaChange($event.value)">
-                  <mat-option value="true">Sim</mat-option>
-                  <mat-option value="false">Não</mat-option>
+                  <!-- Alterado para [value]="true" e [value]="false" -->
+                  <mat-option [value]="true">Sim</mat-option>
+                  <mat-option [value]="false">Não</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
-            <div class="row fields-row">
 
-              <!--
-              <mat-form-field class="col-md-4" appearance="outline">
-                <mat-label></mat-label>
-                <input matInput formControlName="especialista" [disabled]="!isEspecialistaEnabled" />
-                <div
-                  *ngIf="pesquisaAtendimentoForm.get('Especialista')?.invalid && pesquisaAtendimentoForm.get('especialista')?.touched">
-                  <small class="text-danger">Esse campo é obrigatório.</small>
-                </div>
-              </mat-form-field>
-              -->
+            <div class="row fields-row">
               <mat-form-field class="col-md-4" appearance="outline">
                 <mat-label>Especialista</mat-label>
                 <mat-select formControlName="especialista" [disabled]="!isEspecialistaEnabled">
@@ -558,8 +573,10 @@
                   <mat-option value="codesp2">Especialista-2</mat-option>
                   <mat-option value="codesp3">Especialista-3</mat-option>
                 </mat-select>
-                <div
-                  *ngIf="pesquisaAtendimentoForm.get('especialista')?.invalid && pesquisaAtendimentoForm.get('especialista')?.touched">
+                <div *ngIf="
+                    pesquisaAtendimentoForm.get('especialista')?.invalid &&
+                    pesquisaAtendimentoForm.get('especialista')?.touched
+                  ">
                   <small class="text-danger">Esse campo é obrigatório.</small>
                 </div>
               </mat-form-field>
@@ -570,23 +587,35 @@
                   [disabled]="!isDataAgendamentoEnabled" />
                 <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                 <mat-datepicker #picker></mat-datepicker>
-                <div
-                  *ngIf="pesquisaAtendimentoForm.get('dataAgendamento')?.hasError('required') && pesquisaAtendimentoForm.get('dataAgendamento')?.touched">
+
+                <div *ngIf="
+                    pesquisaAtendimentoForm.get('dataAgendamento')?.hasError('required') &&
+                    pesquisaAtendimentoForm.get('dataAgendamento')?.touched
+                  ">
                   <small class="text-danger">Este campo é obrigatório.</small>
                 </div>
-                <div
-                  *ngIf="pesquisaAtendimentoForm.get('dataAgendamento')?.hasError('matDatepickerParse') && pesquisaAtendimentoForm.get('dataAgendamento')?.touched">
+                <div *ngIf="
+                    pesquisaAtendimentoForm.get('dataAgendamento')?.hasError('matDatepickerParse') &&
+                    pesquisaAtendimentoForm.get('dataAgendamento')?.touched
+                  ">
                   <small class="text-danger">Data inválida. O formato deve ser dd/MM/aaaa.</small>
                 </div>
               </mat-form-field>
-
             </div>
           </div>
           <!-- End Question 8° -->
         </mat-expansion-panel>
       </mat-accordion>
+      <mat-card>
+        <div class="valor-total">
+          <strong>Valor Total: </strong>{{ valorTotal | currency:'BRL' }}
+        </div>
+
+      </mat-card>
     </mat-card-content>
+
   </mat-card>
+
 
 
   <mat-card-actions>

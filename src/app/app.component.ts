@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
+import { PesquisaAtendimentoService } from './pesquisa-atendimento.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { PesquisaAtendimentoModel } from './pesquisa-atendimento.model';
 
 @Component({
   selector: 'app-root',
@@ -9,6 +11,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 })
 export class AppComponent implements OnInit {
   pesquisaAtendimentoForm: FormGroup;
+
+  isContentLoaded = false;  // Controle do carregamento do conteúdo
 
   // Variáveis de controle para habilitar/desabilitar os campos
   isBandaLargaEnabled = false;
@@ -28,14 +32,25 @@ export class AppComponent implements OnInit {
   isLinkedinEnabled = false;
   isEspecialistaEnabled = false;
   isDataAgendamentoEnabled = false;
+  lojaId: string ='5';
+  usuarioId: string = '6';
+  valorTotal: number = 0;
 
 
-  constructor(private fb: FormBuilder) {}
+  constructor(
+    private fb: FormBuilder,
+    private pesquisaAtendimentoService: PesquisaAtendimentoService,
+    private snackBar: MatSnackBar
+
+  ) {}
 
   ngOnInit(): void {
 
     this.pesquisaAtendimentoForm = this.fb.group({
 
+      lojaId: [this.lojaId, Validators.required],
+      usuarioId: [this.usuarioId],
+      valorTotal: [this.valorTotal],
       // Variables 1o Question Banda larga and Link Dedicado
       hasBandaLarga: [null, Validators.required],
       bandaLargaFornecedor: [{ value: '', disabled: true }, Validators.required],
@@ -50,7 +65,7 @@ export class AppComponent implements OnInit {
       // Variables 2o Question (Solução de Voz) Linha Fixa e PABX
       hasLinhaFixa: [null, Validators.required],
       linhaFixaFornecedor: [{ value: '', disabled: true },Validators.required],
-      //linhaFixaVelocidade: [{ value: '', disabled: true },Validators.required],
+      linhaFixaVelocidade: [{ value: '', disabled: true },Validators.required],
       linhaFixaValor: [{ value: '0', disabled: true }, [Validators.required, Validators.min(1)]],
 
       //linhaFixaValor: [{ value: 0, disabled: true }],
@@ -59,7 +74,6 @@ export class AppComponent implements OnInit {
       pabxVelocidade: [{ value: '', disabled: true },Validators.required],
       // pabxValor: [{ value: 0, disabled: true }],
       pabxValor: [{ value: '0', disabled: true }, [Validators.required, Validators.min(1)]],
-
 
       // Variables 3o Question Segurança/Gestão (SDWAN and Gestão de Trafego)
 
@@ -103,12 +117,12 @@ export class AppComponent implements OnInit {
       hasCloud: [null, Validators.required],
       cloudFornecedor: [{ value: '', disabled: true },Validators.required],
       cloudVelocidade: [{ value: '', disabled: true },Validators.required],
-      cloudValor: [{ value: '0', disabled: true }, [Validators.required, Validators.min(1)]],
+      cloudValor: [{ value: '0', disabled: true }, Validators.required],
       /** */
       hasServidor: [null, Validators.required],
       servidorFornecedor: [{ value: '', disabled: true },Validators.required],
       servidorVelocidade: [{ value: '', disabled: true },Validators.required],
-      servidorValor: [{ value: '0', disabled: true }, [Validators.required, Validators.min(1)]],
+      servidorValor: [{ value: '0', disabled: true }, Validators.required],
 
       // Variables 7o Question Site e/ou redes sociais (site/instagram/Linkdn)?
       hasSite: [null, Validators.required],
@@ -116,13 +130,44 @@ export class AppComponent implements OnInit {
       hasInstagram: [null, Validators.required],
       instagramUrl: [{ value: '', disabled: true }, Validators.required],
       hasLinkedin: [null, Validators.required],
-      linkedinteUrl: [{ value: '', disabled: true }, Validators.required],
+      linkedinUrl: [{ value: '', disabled: true }, Validators.required],
       // Variables 8o  agendar uma vídeo/reunião (especialista/Data)
+
       hasEspecialista: [null, Validators.required],
-      especialista: [{ value: '', disabled: true }, Validators.required],
-      dataAgendamento: ['', [Validators.required, Validators.pattern(/^\d{2}\/\d{2}\/\d{4}$/)]],
+      especialista: [{ value: null, disabled: true }, Validators.required],
+      dataAgendamento: [{ value: null, disabled: true }, Validators.required],
+
+
     });
+    // Assinar as mudanças de valor dos campos "valor"
+    const valorFields = [
+      'bandaLargaValor',
+      'linkDedicadoValor',
+      'linhaFixaValor',
+      'pabxValor',
+      'sdwanValor',
+      'gestaoTrafegoValor',
+      'desktopValor',
+      'notebookValor',
+      'office365Valor',
+      'googleWorkspaceValor',
+      'cloudValor',
+      'servidorValor'
+    ];
+
+    valorFields.forEach(field => {
+      this.pesquisaAtendimentoForm.get(field)?.valueChanges.subscribe(() => {
+        this.calcularValorTotal();
+      });
+    });
+
+    // Chama a função uma vez para inicializar o total
+    this.calcularValorTotal();
+
   }
+
+
+
 
   // Função para controlar a habilitação dos campos da banda larga
   onBandaLargaChange(value: string): void {
@@ -367,7 +412,7 @@ export class AppComponent implements OnInit {
   }
 
    // Função para controlar a habilitação dos campos do Servidor
-   onServidorchange(value: string): void {
+   onServidorChange(value: string): void {
     this.isServidorEnabled = value === 'true';
     this.toggleServidorFields(this.isServidorEnabled);
   }
@@ -376,7 +421,7 @@ export class AppComponent implements OnInit {
   if (isEnabled) {
     this.pesquisaAtendimentoForm.get('servidorFornecedor')?.enable();
     this.pesquisaAtendimentoForm.get('servidorVelocidade')?.enable();
-    this.pesquisaAtendimentoForm.get('ServidorValor')?.enable();
+    this.pesquisaAtendimentoForm.get('servidorValor')?.enable();
   } else {
     this.pesquisaAtendimentoForm.get('servidorFornecedor')?.disable();
     this.pesquisaAtendimentoForm.get('servidorVelocidade')?.disable();
@@ -437,7 +482,8 @@ export class AppComponent implements OnInit {
   }
   //
   // 8.1 Especialista
- onEspecialistaChange(value: string): void {
+/*
+  onEspecialistaChange(value: string): void {
   this.isEspecialistaEnabled = value === 'true';
   this.toggleEspecialistaFields(this.isEspecialistaEnabled);
   }
@@ -458,18 +504,136 @@ export class AppComponent implements OnInit {
     }
 
     toggleDataAgendamentoFields(isEnabled: boolean): void {
-    if (isEnabled) {
+
+      if (isEnabled) {
        this.pesquisaAtendimentoForm.get('dataAgendamento')?.enable();
     } else {
        this.pesquisaAtendimentoForm.get('dataAgendamento')?.disable();
        // Limpar os campos quando "Não" for selecionado
        this.pesquisaAtendimentoForm.get('dataAgendamento')?.reset();
     }
+
+  }
+*/
+  onEspecialistaChange(value: boolean) {
+    if (value === true) {
+      this.isEspecialistaEnabled = true;
+      this.isDataAgendamentoEnabled = true;
+
+      // Habilita os campos e adiciona os validadores
+      this.pesquisaAtendimentoForm.get('especialista').enable();
+      this.pesquisaAtendimentoForm
+        .get('especialista')
+        .setValidators(Validators.required);
+      this.pesquisaAtendimentoForm.get('dataAgendamento').enable();
+      this.pesquisaAtendimentoForm
+        .get('dataAgendamento')
+        .setValidators(Validators.required);
+    } else {
+      this.isEspecialistaEnabled = false;
+      this.isDataAgendamentoEnabled = false;
+
+      // Limpa os valores dos campos
+      this.pesquisaAtendimentoForm.get('especialista').setValue(null);
+      this.pesquisaAtendimentoForm.get('dataAgendamento').setValue(null);
+
+      // Desabilita os campos e remove os validadores
+      this.pesquisaAtendimentoForm.get('especialista').disable();
+      this.pesquisaAtendimentoForm.get('especialista').clearValidators();
+      this.pesquisaAtendimentoForm.get('dataAgendamento').disable();
+      this.pesquisaAtendimentoForm.get('dataAgendamento').clearValidators();
+    }
+
+    // Atualiza o estado dos validadores
+    this.pesquisaAtendimentoForm.get('especialista').updateValueAndValidity();
+    this.pesquisaAtendimentoForm.get('dataAgendamento').updateValueAndValidity();
+  }
+
+  // Preencher o formulário com dados aleatórios se o preenchimento automático estiver ativo
+
+
+
+  verificarCamposInvalidos() {
+    const invalidControls = [];
+    const controls = this.pesquisaAtendimentoForm.controls;
+    for (const name in controls) {
+      if (controls[name].invalid) {
+        invalidControls.push({
+          nome: name,
+          erros: controls[name].errors,
+          valor: controls[name].value
+        });
+      }
+    }
+    console.log('Campos inválidos:', invalidControls);
+  }
+
+  calcularValorTotal(): void {
+    let total = 0;
+
+    const valorFields = [
+      'bandaLargaValor',
+      'linkDedicadoValor',
+      'linhaFixaValor',
+      'pabxValor',
+      'sdwanValor',
+      'gestaoTrafegoValor',
+      'desktopValor',
+      'notebookValor',
+      'office365Valor',
+      'googleWorkspaceValor',
+      'cloudValor',
+      'servidorValor'
+    ];
+
+    valorFields.forEach(field => {
+      const control = this.pesquisaAtendimentoForm.get(field);
+      if (control) {
+        const value = parseFloat(control.value);
+        if (!isNaN(value)) {
+          total += value;
+        }
+      }
+    });
+
+    this.valorTotal = total;
   }
 
   onSubmit(): void {
     if (this.pesquisaAtendimentoForm.valid) {
-      console.log(this.pesquisaAtendimentoForm.value);
+
+      const formData= {
+         ...this.pesquisaAtendimentoForm.value,
+         valorTotal: this.valorTotal,
+
+      }
+         //const formData = this.pesquisaAtendimentoForm.value;
+
+      console.log('Dados do formulário:', formData); // Verifique se lojaId está presente
+
+      this.pesquisaAtendimentoService.salvarDados(formData).subscribe(
+        response => {
+          this.snackBar.open('Dados salvos com sucesso', 'Fechar', {
+            duration: 3000
+          });
+        },
+        error => {
+          this.snackBar.open('Dados inconsistentes, corrija e envie novamente.', 'Fechar', {
+            duration: 3000
+          });
+        }
+      );
+
+    } else {
+      this.pesquisaAtendimentoForm.markAllAsTouched(); // Marca todos os campos como 'touched'
+      this.snackBar.open('Por favor, preencha todos os campos obrigatórios.', 'Fechar', {
+        duration: 3000
+      });
+
+      // Chama o método para verificar os campos inválidos
+      this.verificarCamposInvalidos();
     }
   }
+
+
 }

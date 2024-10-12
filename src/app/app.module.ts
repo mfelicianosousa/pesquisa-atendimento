@@ -1,11 +1,17 @@
 import { NgModule } from '@angular/core';
 //
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { HttpInterceptorService } from './http.interceptor';
+
 import { MAT_DATE_LOCALE, MAT_DATE_FORMATS, DateAdapter, MatDateFormats } from '@angular/material/core';
 import { MatNativeDateModule } from '@angular/material/core';
 import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 //
+HttpClientModule
+
+import { HttpClientModule } from '@angular/common/http';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,6 +24,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select';    // Para suportar MatFormField
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { AppComponent } from './app.component';
 
 // Registrar locale pt-BR
@@ -39,9 +46,12 @@ export const MY_DATE_FORMATS: MatDateFormats = {
     AppComponent,
   ],
   imports: [
-    MatNativeDateModule,
     MatDatepickerModule,
+    MatNativeDateModule,
+    MatSnackBarModule,
+    MatInputModule,
     BrowserModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     ReactiveFormsModule,
     MatCardModule,
@@ -53,12 +63,13 @@ export const MY_DATE_FORMATS: MatDateFormats = {
     MatSelectModule, // MatSelectModule
     MatExpansionModule,
 
+
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
     { provide: MAT_DATE_FORMATS, useValue: MY_DATE_FORMATS },
-    { provide: LOCALE_ID, useValue: 'pt-BR' }
-
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
+    { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptorService, multi: true}
   ],
   bootstrap: [AppComponent]
 })

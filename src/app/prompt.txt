@@ -1,0 +1,26 @@
+
+ Tenho um formulário em angular@11.1, construindo com a seguinte estrutura de app-componentes.html <form [formGroup]="pesquisaAtendimentoForm" (ngSubmit)="onSubmit()">
+  <mat-card>
+    <mat-card-header class="center-title">
+      <mat-card-title>Formulário Pesquisa de Atendimento</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- 1° Pergunta -->
+      <mat-accordion>
+        <mat-expansion-panel>
+		   <mat-expansion-panel-header class="custom-header">
+            <mat-panel-title class="custom-title">
+              Qual o custo atual da solução de <strong> &nbsp; INTERNET &nbsp;</strong> da sua empresa?
+            </mat-panel-title>
+          </mat-expansion-panel-header>
+		  
+		  
+        </mat-expansion-panel>
+      </mat-accordion>
+	</mat-card-content>
+   </mat-card>   
+   
+   Quando ele executa pela primeira vez, ele expande toda a estrutura de componente, o <card>  <mat-card-header> <mat-accordion> <mat-expansion-panel>, 
+   abre todos os componentes da tela, mas alguns itens ficam em branco com toda a tela aberta.
+   Mas eu so quero que ele só expanda o <mat-expansion-panel-header> os demais fiquem contraidos. 
+   Como devo montar essa lógica, pode dar um exemplo?   

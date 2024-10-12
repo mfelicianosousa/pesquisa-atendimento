@@ -7,12 +7,18 @@
 .fields-row {
   display: flex;  /* Permite que os campos sejam alinhados na mesma linha */
   flex: 1;  /* Para ocupar todo o espaço disponível */
-  align-items: center; /* Garante que todos os campos também estejam centralizados verticalmente */
+  /* align-items: center; Garante que todos os campos também estejam centralizados verticalmente */
+  align-items: stretch; /* garante que os campos ocupem toda a altura da linha*/
+  height: auto; /* Garante que a linha se ajuste à altura dos inputs */
 }
 
 .mat-form-field {
   flex: 1; /* Garante que todos os campos ocupem o mesmo espaço */
   margin-right: 0; /* Remove o espaço entre os campos */
+  min-height: 48px; /* Define uma altura mínima para o campo */
+  height: 100%; /* Garante que o campo ocupe a altura completa */
+  box-sizing: border-box; /* Garante que o padding não cause estouro */
+  padding: 0;
 }
 
 .mat-form-field:last-child {
@@ -26,4 +32,46 @@
 .center-title{
   display: flex;
   justify-content: center;
+}
+
+.enabled-field input,
+.disabled-field input {
+  font-family: Tahoma, sans-serif;
+  font-size: 14px;
+  height: 40px; /* Ajuste para o valor desejado */
+  padding: 2px 8px; /* Adiciona um pequeno padding horizontal */
+  box-sizing: border-box; /* Garante que padding e borda sejam incluídos na altura total */
+}
+
+.enabled-field input {
+  background-color: #e0f7fa; /* Cor diferenciada quando habilitado */
+}
+
+.disabled-field input {
+  background-color: #f5f5f5; /* Cinza claro quando desabilitado */
+}
+
+mat-form-field-wrapper {
+  height: 100%; /* Garante que o conteúdo interno ocupe toda a altura */
+}
+
+.mat-form-field-flex {
+  height: 100%;
+  align-items: center; /* Centraliza o label dentro do input */
+}
+
+.mat-label {
+  display: flex;
+  align-items: center; /* Garante que o label fique centralizado verticalmente */
+}
+
+.fields-row {
+  display: flex;
+  flex: 1;
+  align-items: stretch;
+  height: auto;
+}
+
+.mat-form-field-appearance-outline .mat-form-field-outline {
+  top: 0; /* Garante que o contorno não cause deslocamento do label */
 }
